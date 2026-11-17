@@ -1,0 +1,75 @@
+# FOIA request: Maritime Administration (MARAD) — Port Infrastructure Development Program (PIDP): fields missing from the public applicant list
+
+| | |
+| --- | --- |
+| Program ID (inventory) | pidp |
+| Status | Drafted 2026-11-17, not submitted |
+| Submit via | FOIA.gov → Department of Transportation → Maritime Administration; or email foia.marad@dot.gov |
+| Addressed to | MARAD FOIA Officer |
+| Priority (kickoff T0.4) | 1 (supplementary; optional but recommended) |
+| Postal address | Only needed if mailing; verify on the agency FOIA page first (portal/email submission is preferred) |
+
+> Fill in the bracketed placeholders **outside the repo** (in the portal form or a local copy). This repository is public: never commit your name, address, email or phone.
+
+---
+
+FOIA Officer
+Maritime Administration, U.S. Department of Transportation
+1200 New Jersey Avenue SE
+Washington, DC 20590
+foia.marad@dot.gov
+
+**Re: Freedom of Information Act request — PIDP application records, FY2019 to present (fields not in the public applicant list)**
+
+Dear FOIA Officer:
+
+Under the Freedom of Information Act, 5 U.S.C. § 552, and the Department of Transportation's FOIA regulations at 49 C.F.R. part 7, I request the following records.
+
+## Records requested
+
+MARAD publishes "FY19-26 PIDP Eligible Applicants.xlsx" (https://www.maritime.dot.gov/grants-finances/federal-grant-assistance/pidp-applicant-list), which lists round, applicant name, project name, state, PIDP request and project cost for eligible applications. I am **not** asking for that information again.
+
+I request a list, for **every application received under PIDP from FY2019 through the most recent round** (including applications determined ineligible, which the public list appears to omit), of the following fields where MARAD holds them:
+
+1. Round/fiscal year, applicant name and project name (only so the records can be matched to the public list)
+2. Applicant UEI and/or DUNS number
+3. Applicant type (e.g. port authority, state, county, city, special district, tribe, private entity)
+4. Applicant city and county, and project location (city/county) if recorded separately
+5. Outcome: selected, not selected, or determined ineligible (and award amount if selected)
+6. Whether the application was considered under the small-project/small-port set-aside, if recorded
+7. Any internal application identifier
+
+For context, OMB generic clearance ICR 202308-2133-001 states that MARAD maintains a list of all PIDP applications from 2019 to 2024, so these fields are likely held in that list or in MARAD's grants management records.
+
+## Format
+
+Please provide the records electronically, in a machine-readable format (CSV or Excel; a database export or report from the grants management system is fine), as 5 U.S.C. § 552(a)(3)(B) provides when records are readily reproducible in that form. I am asking for a **list or data extract of the fields above, not copies of the applications themselves.** Producing an extract from an existing electronic database by running a query or report is a search, not the creation of a new record.
+
+If a field is not held, please release the remaining fields rather than delaying the response. If any field or record is withheld, please release all reasonably segregable portions and cite the specific exemption for each withholding. Applicant names, locations and requested amounts for public entities are not confidential commercial information; MARAD already publishes most of them. I am happy to receive records on a rolling basis.
+
+## Fee category, fee waiver and fee limit
+
+I am an independent researcher, so I fall in the "all other requesters" fee category. I understand this entitles me to the first two hours of search time and the first 100 pages (or equivalent) free.
+
+I request a waiver of all fees under 5 U.S.C. § 552(a)(4)(A)(iii) and 49 C.F.R. part 7, because disclosure is in the public interest and is not primarily in my commercial interest:
+
+- **Subject:** the records concern identifiable operations of the federal government: how MARAD receives and selects applications for competitive grants under the Port Infrastructure Development Program.
+- **Informative value:** MARAD's public list omits applicant identifiers, applicant type, location and outcome, and appears to cover only eligible applications, so the requested fields are not otherwise available.
+- **Contribution to public understanding:** I am building an open, documented dataset of federal harbor and coastal infrastructure funding, which tests whether competitive funding follows community need or capacity to apply. I will publish the cleaned data and documentation in a public repository under a Creative Commons Attribution (CC BY 4.0) license, archive a release with a DOI, and report the findings in a research paper and a short public policy brief. The data will be usable by researchers, journalists, ports and local governments.
+- **Significance:** knowing who applied, not only who won, is what makes it possible to tell whether low-capacity communities are absent from these programs or are applying and losing. Award-only data cannot answer that question.
+- **No commercial interest:** I have no commercial interest in the records and will not sell them or use them for any commercial purpose.
+
+If the fee waiver is denied, I agree to pay fees up to **$25**. Please contact me before incurring any fees above that amount.
+
+## Contact
+
+If anything in this request is unclear or would be costly to process, please contact me by email; I would much rather narrow the request than have it delayed.
+
+Thank you for your help.
+
+Sincerely,
+
+[REQUESTER FULL NAME]
+[MAILING ADDRESS]
+[EMAIL]
+[PHONE]
