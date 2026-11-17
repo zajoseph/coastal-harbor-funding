@@ -30,12 +30,19 @@ The keyword regex used in several filters is `harbor|port|marina|wharf|pier|dock
 
 1. **ALN 97.047 holds three different things.** Legacy competitive PDM (to FY2019), BRIC (FY2020+) and, from FY2022, PDM used as an earmark vehicle. A pull on 97.047 alone mixes the competitive and earmark channels. Separate them with OpenFEMA `programArea` / `program` and `programFy`.
 2. **ALN 20.823 (PIDP) also carries earmarks, now its own row `pidp_cpf`.** Earmarked PIDP money appears in FY2024 (about $70.46M: $120,460,124 appropriated, $50M offered competitively) and FY2026 ($64,702,000 of the $103,330,000 annual appropriation, per MARAD's FY2026 small-ports webinar). `cpf_cds_fy2022` already listed PIDP as a host account, but only as a cross-agency catch-all with no ALN, so a 20.823 pull would have mixed channels. `pidp_cpf` mirrors `pdm_cpf`: tag 20.823 awards that match THUD CPF/CDS tables and move them out of `pidp`. FY2022, FY2023 and FY2025 earmarks not checked; FY2023's appropriation was all offered competitively.
-3. **BRIC has public applicant-level data.** OpenFEMA HMA Subapplications v2 lists Not Selected and Ineligible subapplications with subapplicant name, city and benefiting counties, FY2020 onward. That makes H3 testable for BRIC without FOIA. It doesn't cover subapplications a state screened out before submitting to FEMA (unverified).
-4. **MARAD has a full PIDP applicant list.** An OMB clearance request for a PIDP applicant survey (2023) says MARAD keeps a list of all PIDP applications, 2019–2024. This is the strongest FOIA target for T0.4.
+3. **Applicant lists are public for five programs** (T0.4 checks, 2026-11-17; `applicant_data_known` refreshed on 2026-11-17): PIDP (MARAD eligible-applicant workbook FY2019–26), TIGER–BUILD–RAISE (DOT workbook 2009–2025), INFRA FY2022+ (DOT lists), BRIC (OpenFEMA HmaSubapplications v2, FY2020–25, incl. Not Selected/Ineligible) and PDM FY2010–19 (same OpenFEMA dataset, but titles and UEI blank). None of the lists gives outcome and UEI together, so award matching is still needed. OpenFEMA can't contain subapplications that states never forwarded to FEMA.
+4. **The old OpenFEMA HMA Projects v4 dataset is gone from the catalog** (T0.4). The `award_data_query` cells for `bric`, `pdm_competitive` and `pdm_cpf` still name it; T1.1/T2.2 should use HmaSubapplications v2 (or its successor) instead. Not changed in this table yet.
 5. **The ERDC "DIG" dredging extracts end in 2000.** The page named in the plan (dots.el.erdc.dren.mil/dig.html) has Chief's-report data for 1908–2000 only, so FY2010–2026 dredging has to come from USACE DIS reports (and the NDC "Actual Dredging Cost Data 1963–2018" series). This doesn't reopen the settled decision, which already names DIS, but T2.3 should know before it starts. I haven't checked whether DIS's past-year reports go back to FY2010.
 6. **Earmarks have structural zeros.** Earmarks existed in FY2010, were barred FY2011–FY2021, and returned in FY2022. H2 models need to treat FY2011–2021 as "channel closed", not as zero demand.
 7. **Sea Grant isn't harbor infrastructure funding.** Its awards go to university Sea Grant programs. The row is kept because the plan names it, but I recommend leaving it out of harbor dollar totals (possibly as an extension-capacity covariate instead). PM decision.
 8. **Several prime awards go to states, not harbor owners** (BRIC, PDM, BIG). Harbor linking needs the subapplicant- or facility-level lists (OpenFEMA, FWS award lists), not USAspending prime recipients. This is relevant to the Gate 1 match rate.
+
+## Corrections log
+
+| Date | Row | Column | Old value | New value | Source |
+|---|---|---|---|---|---|
+| 2026-11-17 | `pidp` | `notes` (FY2026 small-ports reserve) | $112.5M (25% of $450M IIJA funds, from the January 2026 NOFO issued before the FY2026 annual appropriation) | $122,157,000 (25% of $488.628M, after $38.628M of the FY2026 annual appropriation was added to the competition) | MARAD FY2026 SPSP webinar, slide 9; DOT press release 2026-03-26 (both in `pidp.source_urls`) |
+| 2026-11-17 | `pidp`, `raise_build_tiger`, `infra`, `bric`, `pdm_competitive` | `applicant_data_known`, `source_urls` | no / unknown, or FOIA-only | yes (public lists; see finding 3); list URLs added | T0.4 handoff (`claude/handoffs/T0.4_2026-11-17.md`), Findings table |
 
 ## Programs considered and excluded
 
