@@ -31,7 +31,7 @@ Current tables:
 
 | File | Owner task | Status |
 |---|---|---|
-| `program_inventory.csv` | T0.3 | Placeholder, header only. T0.3 fills it and may change the columns |
+| `program_inventory.csv` | T0.3 | 18 programs; columns and sources in `program_inventory_notes.md` |
 
 ## manifest.csv
 
