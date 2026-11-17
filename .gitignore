@@ -1,0 +1,48 @@
+# ---------------------------------------------------------------
+# Data
+#   data/raw/        downloads        -> NOT committed (folder kept via .gitkeep)
+#   data/processed/  derived outputs  -> NOT committed (rebuilt from code)
+#   data/reference/  hand-built tables -> committed (not listed here on purpose)
+#   data/manifest.csv                  -> committed
+# ---------------------------------------------------------------
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
+
+data/processed/**
+!data/processed/**/
+!data/processed/**/.gitkeep
+
+# ---------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments (uv creates .venv/)
+.venv/
+venv/
+env/
+.env
+.conda/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ---------------------------------------------------------------
+# Editors / OS
+# ---------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

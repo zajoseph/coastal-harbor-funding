@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harborfund"
+version = "0.1.0"
+description = "Coastal Harbor Funding Equity: does harbor funding follow need or capacity to apply?"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "zajoseph" }]
+# Core stack only. Tasks that need more (e.g. geopandas for maps in T3.1)
+# add it here with `uv add <pkg>` and commit the updated uv.lock.
+dependencies = [
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "pyarrow>=15",
+    "requests>=2.31",
+    "openpyxl>=3.1",
+    "matplotlib>=3.8",
+    "statsmodels>=0.14",
+]
+
+[project.urls]
+Repository = "https://github.com/zajoseph/coastal-harbor-funding"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.5",
+    "jupyterlab>=4",
+    "ipykernel>=6",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
