@@ -1,0 +1,51 @@
+# T1.1 USAspending pilot pull: programs, geography and years.
+# Run: uv run python -m harborfund.ingest.usaspending all
+# Another config: uv run python -m harborfund.ingest.usaspending all --config path/to/other.toml
+
+[pull]
+# Downloads are national for each ALN; the geography filter is applied in the
+# `process` step, so raw files can be reused (e.g. for the national extension).
+fy_start = 2010              # first federal fiscal year (Oct 1 of fy_start-1)
+fy_end = 2026                # last federal fiscal year (Sep 30 of fy_end)
+# Assistance award types: 02-05 grants/cooperative agreements, 06/10 direct
+# payments, 07/08 loans, 09 insurance, 11 other, -1 unknown. Keep all; the
+# notebook reports the mix.
+award_type_codes = ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "-1"]
+poll_seconds = 20
+max_wait_minutes = 90
+
+# One download per ALN. `program_ids` are rows of data/reference/program_inventory.csv
+# that share the ALN. The pull starts at max(pull.fy_start, earliest fy_start of those
+# rows) unless `fy_start` is set here.
+[[downloads]]
+name = "aln_20.823"
+aln = "20.823"
+program_ids = ["pidp", "pidp_cpf"]
+fy_start = 2010              # pull before PIDP's 2019 start to see what else used 20.823
+
+[[downloads]]
+name = "aln_11.300"
+aln = "11.300"
+program_ids = ["eda_public_works"]
+
+[[downloads]]
+name = "aln_11.307"
+aln = "11.307"
+program_ids = ["eda_eaa"]
+
+[[downloads]]
+name = "aln_97.047"
+aln = "97.047"
+program_ids = ["bric", "pdm_cpf"]   # FY2020+ per kickoff; pdm_competitive (<=FY2019) is out of scope
+
+[geography]
+states = ["CA", "OR", "WA"]
+counties_csv = "data/reference/coastal_counties.csv"   # relative to repo root
+# Programs whose prime awards are kept at state level (no county filter),
+# because the prime recipient is usually the state. Subawards are still county-flagged.
+state_level_primes = ["97.047"]
+
+[zcta_county]
+# Census 2020 ZCTA-to-county relationship file, used to give subawards a county
+# (USAspending subaward files have ZIP codes but no county FIPS).
+url = "https://www2.census.gov/geo/docs/maps-data/data/rel2020/zcta520/tab20_zcta520_county20_natl.txt"

@@ -1,0 +1,43 @@
+state,state_fips,county_fips,county_name,noaa_coastal_shoreline,port_inventory_harbors,source
+CA,06,06001,Alameda,true,1,NOAA_CCD_2013
+CA,06,06013,Contra Costa,true,0,NOAA_CCD_2013
+CA,06,06015,Del Norte,true,1,NOAA_CCD_2013
+CA,06,06023,Humboldt,true,3,NOAA_CCD_2013
+CA,06,06037,Los Angeles,true,4,NOAA_CCD_2013
+CA,06,06041,Marin,true,0,NOAA_CCD_2013
+CA,06,06045,Mendocino,true,2,NOAA_CCD_2013
+CA,06,06053,Monterey,true,2,NOAA_CCD_2013
+CA,06,06055,Napa,true,0,NOAA_CCD_2013
+CA,06,06059,Orange,true,3,NOAA_CCD_2013
+CA,06,06073,San Diego,true,3,NOAA_CCD_2013
+CA,06,06075,San Francisco,true,1,NOAA_CCD_2013
+CA,06,06079,San Luis Obispo,true,2,NOAA_CCD_2013
+CA,06,06081,San Mateo,true,1,NOAA_CCD_2013
+CA,06,06083,Santa Barbara,true,1,NOAA_CCD_2013
+CA,06,06085,Santa Clara,true,0,NOAA_CCD_2013
+CA,06,06087,Santa Cruz,true,1,NOAA_CCD_2013
+CA,06,06095,Solano,true,1,NOAA_CCD_2013
+CA,06,06097,Sonoma,true,1,NOAA_CCD_2013
+CA,06,06111,Ventura,true,3,NOAA_CCD_2013
+OR,41,41007,Clatsop,true,2,NOAA_CCD_2013
+OR,41,41011,Coos,true,2,NOAA_CCD_2013
+OR,41,41015,Curry,true,3,NOAA_CCD_2013
+OR,41,41019,Douglas,true,1,NOAA_CCD_2013
+OR,41,41039,Lane,true,1,NOAA_CCD_2013
+OR,41,41041,Lincoln,true,2,NOAA_CCD_2013
+OR,41,41057,Tillamook,true,1,NOAA_CCD_2013
+WA,53,53009,Clallam,true,3,NOAA_CCD_2013
+WA,53,53027,Grays Harbor,true,1,NOAA_CCD_2013
+WA,53,53029,Island,true,0,NOAA_CCD_2013
+WA,53,53031,Jefferson,true,1,NOAA_CCD_2013
+WA,53,53033,King,true,1,NOAA_CCD_2013
+WA,53,53035,Kitsap,true,0,NOAA_CCD_2013
+WA,53,53045,Mason,true,0,NOAA_CCD_2013
+WA,53,53049,Pacific,true,5,NOAA_CCD_2013
+WA,53,53053,Pierce,true,0,NOAA_CCD_2013
+WA,53,53055,San Juan,true,0,NOAA_CCD_2013
+WA,53,53057,Skagit,true,2,NOAA_CCD_2013
+WA,53,53061,Snohomish,true,1,NOAA_CCD_2013
+WA,53,53067,Thurston,true,0,NOAA_CCD_2013
+WA,53,53069,Wahkiakum,true,0,NOAA_CCD_2013
+WA,53,53073,Whatcom,true,2,NOAA_CCD_2013
