@@ -507,33 +507,97 @@ def zcta_to_county(z: pd.DataFrame) -> pd.DataFrame:
 # --------------------------------------------------------------------------- classify
 
 
+def fema_award_parts(fain: pd.Series) -> pd.DataFrame:
+    """Round year and program code from FEMA award IDs, e.g. EMS-2022-PD-0002 -> 2022, PD.
+
+    Codes seen in the 97.047 pull: BR = BRIC, PC = PDM competitive, PD = PDM (from FY2022
+    the congressionally directed awards; before FY2020 used for older state PDM awards).
+    """
+    x = fain.str.upper().str.extract(r"^EM[A-Z]-(\d{4})-([A-Z]{2})")
+    return pd.DataFrame(
+        {
+            "fema_round_fy": pd.to_numeric(x[0], errors="coerce").astype("Int64"),
+            "fema_program_code": x[1].fillna(""),
+        },
+        index=fain.index,
+    )
+
+
+def marad_fon_family(fon: pd.Series) -> pd.Series:
+    """Group 20.823 funding opportunity numbers (spelling varies: MA-PID-22-001, MAPID22001)."""
+    f = fon.str.upper().str.replace(r"[^A-Z0-9]", "", regex=True)
+    fam = pd.Series("other", index=fon.index, dtype="str")
+    fam[f == ""] = "blank"
+    fam[f.str.match(r"^MAPID\d{2}0*01$")] = "MA-PID-" + f.str.extract(r"^MAPID(\d{2})")[0].fillna(
+        ""
+    )
+    fam[f.str.match(r"^693JF7\d{2}BAA")] = "MARAD BAA 20" + f.str.extract(r"^693JF7(\d{2})")[
+        0
+    ].fillna("")
+    fam[f.str.startswith("DTOS59")] = "DOT BUILD"
+    fam[f.str.startswith("NSMFHP")] = "DOT INFRA"
+    return fam
+
+
 def classify(
-    df: pd.DataFrame, aln: str, fy: pd.Series, text: pd.Series, inv: pd.DataFrame
+    df: pd.DataFrame,
+    aln: str,
+    fy: pd.Series,
+    text: pd.Series,
+    inv: pd.DataFrame,
+    fain: pd.Series | None = None,
+    fon: pd.Series | None = None,
 ) -> pd.DataFrame:
-    """Add program_id, program_basis, earmark and harbor flags. Never drops rows."""
+    """Add program_id, program_basis, earmark and harbor flags. Never drops rows.
+
+    97.047 uses the FEMA award ID (program code + round year); descriptions are
+    unreliable (PDM earmark awards are often described as BRIC). 20.823 uses the
+    funding opportunity family. Earmark tags here are candidates; T2.4's CPF/CDS
+    tables are the definitive source.
+    """
     out = pd.DataFrame(index=df.index)
+    fain = fain if fain is not None else pd.Series("", index=df.index, dtype="str")
+    fon = fon if fon is not None else pd.Series("", index=df.index, dtype="str")
     cpf = text_flag(text, CPF_RE)
     out["earmark_text_flag"] = cpf
 
     if aln == "20.823":
         cpf_start = inventory_fy_start(inv, "pidp_cpf", 2024)
+        fam = marad_fon_family(fon)
+        amhp = text_flag(text, r"\bamhp\b|marine highway")
+        out["fon_family"] = fam
         out["program_id"] = "pidp"
-        out.loc[cpf, "program_id"] = "pidp_cpf"
-        out["program_basis"] = cpf.map({True: "text:CPF", False: "default"})
+        out["program_basis"] = "fon:" + fam
+        other = fam.isin(["DOT BUILD", "DOT INFRA", "other"]) | amhp
+        out.loc[other, "program_id"] = "other_20823"
+        out.loc[amhp, "program_basis"] = "text:AMHP"
+        out.loc[cpf, ["program_id", "program_basis"]] = ["pidp_cpf", "text:CPF"]
         out["earmark_candidate_year"] = fy >= cpf_start
         out["earmark_flag"] = cpf
     elif aln == "97.047":
-        pdm = text_flag(text, PDM_RE)
-        bric = text_flag(text, BRIC_RE)
+        parts = fema_award_parts(fain)
+        out = out.join(parts)
+        code, rnd = parts["fema_program_code"], parts["fema_round_fy"]
         cpf_start = inventory_fy_start(inv, "pdm_cpf", 2022)
-        is_pdm_cpf = cpf | (pdm & ~bric & (fy >= cpf_start))
-        out["program_id"] = "bric"
-        out["program_basis"] = "default"
-        out.loc[bric, "program_basis"] = "text:BRIC"
-        out.loc[pdm & ~bric, ["program_id", "program_basis"]] = ["pdm_other", "text:PDM"]
-        out.loc[is_pdm_cpf, ["program_id", "program_basis"]] = ["pdm_cpf", "text:CPF/PDM"]
-        out["earmark_candidate_year"] = fy >= cpf_start
-        out["earmark_flag"] = is_pdm_cpf
+        pdm_cpf = ((code == "PD") & (rnd >= cpf_start)).fillna(False) | cpf
+        out["program_id"] = "other_97047"
+        out["program_basis"] = "fain:" + code.where(code != "", "?")
+        out.loc[code == "BR", "program_id"] = "bric"
+        out.loc[code == "PC", "program_id"] = "pdm_competitive"
+        out.loc[(code == "PD") & ~pdm_cpf, "program_id"] = "pdm_other"
+        out.loc[pdm_cpf, "program_id"] = "pdm_cpf"
+        # no FEMA ID: fall back to text
+        nofain = code == ""
+        out.loc[nofain & text_flag(text, BRIC_RE), ["program_id", "program_basis"]] = [
+            "bric",
+            "text:BRIC",
+        ]
+        out.loc[nofain & text_flag(text, PDM_RE), ["program_id", "program_basis"]] = [
+            "pdm_other",
+            "text:PDM",
+        ]
+        out["earmark_candidate_year"] = (rnd >= cpf_start).fillna(False)
+        out["earmark_flag"] = pdm_cpf
     else:
         pid = {"11.300": "eda_public_works", "11.307": "eda_eaa"}.get(aln, f"aln_{aln}")
         out["program_id"] = pid
@@ -551,11 +615,20 @@ def classify(
             out.loc[m, "harbor_kw_flag"] = True
             out.loc[m, "harbor_rule"] = "all (port program)"
         elif rx:
-            out.loc[m, "harbor_kw_flag"] = text_flag(text[m], rx)
+            out.loc[m, "harbor_kw_flag"] = text_flag(text[m], whole_words(rx))
             out.loc[m, "harbor_rule"] = "keyword"
         else:
             out.loc[m, "harbor_rule"] = "no rule in inventory"
     return out
+
+
+def whole_words(rx: str) -> str:
+    """Anchor inventory keywords at word starts and allow simple endings.
+
+    'port' then matches port/ports but not support/transportation/opportunity;
+    stems such as 'dredg' still match dredge/dredging.
+    """
+    return r"\b(?:" + rx + r")(?:s|es|e|ed|ing)?\b"
 
 
 def geo_flags(
@@ -644,7 +717,15 @@ def process_prime(
         + " | "
         + col(df, "funding_opportunity_goals_text")
     )
-    c = classify(df, aln, fy, text, inv)
+    c = classify(
+        df,
+        aln,
+        fy,
+        text,
+        inv,
+        fain=col(df, "award_id_fain"),
+        fon=col(df, "funding_opportunity_number"),
+    )
 
     out = pd.DataFrame(index=df.index)
     out["aln"] = aln
@@ -660,7 +741,11 @@ def process_prime(
     state_level = aln in set(cfg["geography"].get("state_level_primes", []))
     out["state_level_prime"] = state_level
     res = pd.concat([out, g, c, df], axis=1)
-    res["in_scope"] = res["in_coastal_county"] | (state_level & res["in_states"])
+    # State-level scope only for state-government primes; other primes (tribes,
+    # universities, local governments) need a coastal-county match like everyone else.
+    res["in_scope"] = res["in_coastal_county"] | (
+        state_level & res["in_states"] & res["recipient_is_state_gov"]
+    )
     return res[res["in_states"] | res["in_coastal_county"]].reset_index(drop=True)
 
 
@@ -672,7 +757,9 @@ def process_subawards(
     inv: pd.DataFrame,
     counties: set[str],
     zc: pd.DataFrame,
+    prime_fon: dict | None = None,
 ) -> pd.DataFrame:
+    """prime_fon maps prime_award_unique_key -> funding opportunity number (subaward files lack it)."""
     if df.empty:
         return df
     states = set(cfg["geography"]["states"])
@@ -705,7 +792,8 @@ def process_subawards(
         + " | "
         + col(df, "subaward_description")
     )
-    c = classify(df, aln, fy, text, inv)
+    fon = col(df, "prime_award_unique_key").map(prime_fon or {}).fillna("")
+    c = classify(df, aln, fy, text, inv, fain=col(df, "prime_award_fain"), fon=fon)
 
     out = pd.DataFrame(index=df.index)
     out["aln"] = aln
@@ -756,7 +844,17 @@ def process(cfg: dict, run_date: str | None) -> dict:
         s_raw = read_kind(dl_dir, "Subawards")
         a = process_prime(a_raw, "award", dl["aln"], window, cfg, inv, counties)
         t = process_prime(t_raw, "transaction", dl["aln"], window, cfg, inv, counties)
-        s = process_subawards(s_raw, dl["aln"], window, cfg, inv, counties, zc)
+        prime_fon = (
+            dict(
+                zip(
+                    a_raw["assistance_award_unique_key"],
+                    a_raw["funding_opportunity_number"].fillna(""),
+                )
+            )
+            if {"assistance_award_unique_key", "funding_opportunity_number"} <= set(a_raw.columns)
+            else {}
+        )
+        s = process_subawards(s_raw, dl["aln"], window, cfg, inv, counties, zc, prime_fon)
         frames["prime_awards"].append(a)
         frames["prime_transactions"].append(t)
         frames["subawards"].append(s)

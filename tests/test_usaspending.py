@@ -91,28 +91,70 @@ def test_zcta_to_county():
 
 
 def test_classify_97047(inv):
-    df = pd.DataFrame(index=range(4))
-    fy = pd.Series([2021, 2023, 2023, 2023], dtype="Int64")
+    df = pd.DataFrame(index=range(5))
+    fy = pd.Series([2022, 2024, 2023, 2021, 2023], dtype="Int64")
     text = pd.Series(
         [
             "BRIC harbor seawall project",
-            "Pre-Disaster Mitigation congressionally directed spending - seawall",
-            "PDM project",
-            "mitigation planning",
+            "EMERGENCY MANAGEMENT PERFORMANCE GRANTS",  # mislabeled PDM earmark
+            "BRIC: BUILDING RESILIENT INFRASTRUCTURE",  # PDM earmark described as BRIC
+            "PRE-DISASTER MITIGATION",
+            "support for transportation opportunity",
         ]
     )
-    c = us.classify(df, "97.047", fy, text, inv)
-    assert c["program_id"].tolist() == ["bric", "pdm_cpf", "pdm_cpf", "bric"]
-    assert c["earmark_flag"].tolist() == [False, True, True, False]
+    fain = pd.Series(
+        [
+            "EMS-2020-BR-131-0006",
+            "EMS-2022-PD-0001",
+            "EMF-2023-PD-0004",
+            "EMS-2021-PC-0002",
+            "EMS-2021-BR-028",
+        ]
+    )
+    c = us.classify(df, "97.047", fy, text, inv, fain=fain)
+    assert c["program_id"].tolist() == ["bric", "pdm_cpf", "pdm_cpf", "pdm_competitive", "bric"]
+    assert c["earmark_flag"].tolist() == [False, True, True, False, False]
+    assert c["fema_round_fy"].tolist() == [2020, 2022, 2023, 2021, 2021]
     assert c.loc[0, "harbor_kw_flag"]
+    assert not c.loc[4, "harbor_kw_flag"]  # 'port' inside other words does not count
+
+
+def test_whole_words():
+    rx = us.whole_words("harbor|port|dredg")
+    t = pd.Series(
+        ["Port of Newport", "ports and docks", "dredging", "support", "transportation", "harbors"]
+    )
+    assert us.text_flag(t, rx).tolist() == [True, True, True, False, False, True]
+
+
+def test_marad_fon_family():
+    f = pd.Series(
+        [
+            "MA-PID-22-001",
+            "MAPID22001",
+            "MA PID-22 001",
+            "693JF7-20-BAA-0001",
+            "DTOS59-19-RA-BUILD",
+            "",
+        ]
+    )
+    assert us.marad_fon_family(f).tolist() == [
+        "MA-PID-22",
+        "MA-PID-22",
+        "MA-PID-22",
+        "MARAD BAA 2020",
+        "DOT BUILD",
+        "blank",
+    ]
 
 
 def test_classify_20823(inv):
     df = pd.DataFrame(index=range(2))
     fy = pd.Series([2024, 2022], dtype="Int64")
     text = pd.Series(["Community Project Funding: dock repair", "Port of Newport terminal"])
-    c = us.classify(df, "20.823", fy, text, inv)
+    c = us.classify(df, "20.823", fy, text, inv, fon=pd.Series(["MA-PID-23-001", "MAPID21001"]))
     assert c["program_id"].tolist() == ["pidp_cpf", "pidp"]
+    assert c["fon_family"].tolist() == ["MA-PID-23", "MA-PID-21"]
     assert c["harbor_kw_flag"].all()
     assert c["earmark_candidate_year"].tolist() == [True, False]
 
@@ -134,6 +176,7 @@ def test_process_end_to_end(tmp_path, monkeypatch, cfg):
         [
             {
                 "assistance_award_unique_key": "A1",
+                "award_id_fain": "EMF-2020-BR-001-0001",
                 "cfda_numbers_and_titles": "97.047: BRIC",
                 "award_base_action_date": "2021-03-01",
                 "award_base_action_date_fiscal_year": "2021",
@@ -169,6 +212,7 @@ def test_process_end_to_end(tmp_path, monkeypatch, cfg):
         [
             {
                 "prime_award_unique_key": "A1",
+                "prime_award_fain": "EMF-2020-BR-001-0001",
                 "prime_award_cfda_numbers_and_titles": "97.047: BRIC",
                 "subaward_amount": "250000",
                 "subaward_action_date": "2022-01-15",
