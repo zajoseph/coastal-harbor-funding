@@ -13,7 +13,8 @@ row count equals the catalog record count. `--companions` adds the linked tables
 needed for T2.5a.
 
 `process` keeps CA/OR/WA BRIC and PDM subapplications (competitive and earmarked) and adds
-`program_id` (inventory row), the subapplicant's coastal-county flags, and parsed amounts.
+`program_id` (inventory row), the subapplicant's coastal-county flags, and parsed amounts
+(nominal dollars, suffixed `_nominal`).
 
 Program mapping (checked against the v2 data on 2026-11-18; see program_inventory_notes.md):
     "Building Resilient Infrastructure and Communities"           -> bric
@@ -328,6 +329,8 @@ def pacific_extract(df: pd.DataFrame) -> pd.DataFrame:
     out["in_study_window"] = (out["fiscalYear"] >= config.STUDY_FY_START).fillna(False)
     out["has_uei"] = out["subapplicantUei"].notna()
     out["has_title"] = out["subapplicationTitle"].notna()
+    # data/README: processed dollars are constant 2025 unless named _nominal; these are not deflated
+    out = out.rename(columns={c: f"{c}_nominal" for c in MONEY if c in out.columns})
     return out.sort_values(["program_id", "fiscalYear", "subapplicationIdentifier"])
 
 
