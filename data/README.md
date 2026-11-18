@@ -32,7 +32,8 @@ Current tables:
 | File | Owner task | Status |
 |---|---|---|
 | `program_inventory.csv` | T0.3 | 19 programs; columns and sources in `program_inventory_notes.md` |
-| `coastal_counties.csv` | T1.1 | 42 NOAA coastal shoreline counties in CA/OR/WA; sources in `coastal_counties_sources.md` |
+| `coastal_counties.csv` | T1.1 | 42 NOAA coastal shoreline counties in CA/OR/WA; sources in `coastal_counties_sources.md` (checked against the PDF by eye in T1.2) |
+| `harbor_entity_crosswalk.csv` | T1.2 | Pilot: 20 harbors, 29 harbor × entity rows with UEI/legacy DUNS; rules and sources in `harbor_entity_crosswalk_notes.md`. T2.1 extends it |
 
 ## manifest.csv
 
