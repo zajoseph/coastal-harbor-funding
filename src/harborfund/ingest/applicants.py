@@ -174,6 +174,7 @@ def download(run_date: str, only: list[str] | None, force: bool, dry_run: bool) 
     s = _session()
     pages: dict[str, str] = {}
     report = []
+    failed: list[str] = []
     for f in todo:
         d = OUT_DIR / f.source / run_date
         d.mkdir(parents=True, exist_ok=True)
@@ -182,17 +183,26 @@ def download(run_date: str, only: list[str] | None, force: bool, dry_run: bool) 
             print(f"skip (exists): {rel(dest)}")
             continue
         if f.page not in pages:
-            r = s.get(f.page, timeout=60)
-            r.raise_for_status()
-            pages[f.page] = r.text
-            slug = re.sub(r"[^A-Za-z0-9]+", "_", f.page.split("//", 1)[1]).strip("_")[-60:]
-            (d / f"_page_{slug}.html").write_text(r.text, encoding="utf-8")
+            try:
+                r = s.get(f.page, timeout=60)
+                r.raise_for_status()
+                pages[f.page] = r.text
+                slug = re.sub(r"[^A-Za-z0-9]+", "_", f.page.split("//", 1)[1]).strip("_")[-60:]
+                (d / f"_page_{slug}.html").write_text(r.text, encoding="utf-8")
+            except OSError as e:  # requests errors are OSErrors; the page is context only
+                print(f"warning: landing page not saved ({f.page}): {e}")
+                pages[f.page] = ""
         retrieved = dt.datetime.now(dt.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-        r = s.get(f.url, timeout=120)
-        r.raise_for_status()
         ext = dest.suffix.lower()
-        if ext in MAGIC and not r.content.startswith(MAGIC[ext]):
-            raise RuntimeError(f"{f.url} did not return a {ext} file (got {r.content[:40]!r})")
+        try:
+            r = s.get(f.url, timeout=120)
+            r.raise_for_status()
+            if ext in MAGIC and not r.content.startswith(MAGIC[ext]):
+                raise RuntimeError(f"not a {ext} file (starts {r.content[:40]!r})")
+        except (OSError, RuntimeError) as e:
+            print(f"FAILED {f.name}: {e}")
+            failed.append(f.name)
+            continue
         dest.write_bytes(r.content)
         digest = sha256(dest)
         notes = {
@@ -203,7 +213,7 @@ def download(run_date: str, only: list[str] | None, force: bool, dry_run: bool) 
             "file": rel(dest),
             "bytes": dest.stat().st_size,
             "page": f.page,
-            "page_last_updated": page_last_updated(pages[f.page]),
+            "page_last_updated": page_last_updated(pages[f.page]) if pages[f.page] else None,
             "content_type": r.headers.get("content-type"),
         }
         if ext == ".xlsx":
@@ -232,6 +242,8 @@ def download(run_date: str, only: list[str] | None, force: bool, dry_run: bool) 
             flag = "  CHANGED since T0.4" if notes["changed_since_t04"] else "  same as T0.4"
         print(f"{f.name:28} {notes['bytes']:>10,} B  sha256 {digest[:12]}…{flag}")
         report.append(notes | {"sha256": digest})
+    if failed:
+        print(f"\n{len(failed)} file(s) failed: {', '.join(failed)}")
     return report
 
 
