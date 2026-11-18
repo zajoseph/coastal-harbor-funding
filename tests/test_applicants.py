@@ -96,3 +96,26 @@ def test_applicant_file_list():
 def test_page_last_updated():
     html = '<div class="x">Last updated: Tuesday, October 27, 2026</div>'
     assert applicants.page_last_updated(html) == "Tuesday, October 27, 2026"
+
+
+def test_import_files(tmp_path, monkeypatch):
+    import json
+
+    f = next(x for x in applicants.FILES if x.name == "infra_fy26")
+    # browser saved a duplicate name: "INFRA FY26 Applications (1) (1).xlsx"
+    saved = tmp_path / "INFRA FY26 Applications (1) (1).xlsx"
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    wb.active.append(["Applicant", "State"])
+    wb.active.append(["Port of X", "WA"])
+    wb.save(saved)
+    assert applicants.find_local(f, tmp_path) == saved
+    monkeypatch.setattr(applicants, "OUT_DIR", tmp_path / "out")
+    man = tmp_path / "manifest.csv"
+    monkeypatch.setattr(
+        applicants, "append_manifest", lambda rows: man.write_text(json.dumps(rows))
+    )
+    rep = applicants.import_files(tmp_path, "2026-11-18", ["infra_fy26"], force=False)
+    assert rep[0]["rows"] == 1 and rep[0]["method"] == "browser"
+    assert (tmp_path / "out/dot_infra/2026-11-18/INFRA FY26 Applications (1).xlsx").exists()

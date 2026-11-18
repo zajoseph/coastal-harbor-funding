@@ -3,6 +3,11 @@
     uv run python -m harborfund.ingest.applicants              # download everything
     uv run python -m harborfund.ingest.applicants --only dot_infra
     uv run python -m harborfund.ingest.applicants --dry-run    # list files, no network
+    uv run python -m harborfund.ingest.applicants --import-dir ~/Downloads   # files saved by hand
+
+The DOT and MARAD sites answered every scripted request with HTTP 403 on 2026-11-18, so in
+practice the files are saved by hand in a browser and registered with --import-dir, which
+copies them in, checksums them and logs them with "method": "browser".
 
 Each file lands in data/raw/applicants/<source>/<YYYY-MM-DD>/ exactly as served, next to
 a copy of the landing page that links to it (`_page_<name>.html`, kept for the page's
@@ -247,15 +252,114 @@ def download(run_date: str, only: list[str] | None, force: bool, dry_run: bool) 
     return report
 
 
+def find_local(f: SourceFile, folder: Path) -> Path | None:
+    """The browser-saved copy of a file: exact name, or the name with a ' (1)'-style suffix."""
+    name = filename(f.url)
+    exact = folder / name
+    if exact.exists():
+        return exact
+    stem, ext = Path(name).stem, Path(name).suffix
+    hits = sorted(folder.glob(f"{glob_escape(stem)}*{ext}"), key=lambda p: p.stat().st_mtime)
+    return hits[-1] if hits else None
+
+
+def glob_escape(s: str) -> str:
+    return re.sub(r"([\[\]*?])", r"[\1]", s)
+
+
+def import_files(folder: Path, run_date: str, only: list[str] | None, force: bool) -> list[dict]:
+    """Register files saved by hand in a browser (the DOT/MARAD sites refuse scripted
+    requests with HTTP 403). Copies each into data/raw/applicants/<source>/<date>/ under
+    the published file name and logs it like a scripted download, with
+    `"method": "browser"` in the notes. The retrieval time is the saved file's
+    modification time."""
+    import shutil
+
+    todo = [f for f in FILES if not only or f.name in only or f.source in only]
+    report, missing = [], []
+    for f in todo:
+        src = find_local(f, folder)
+        if src is None:
+            missing.append(f.name)
+            continue
+        ext = src.suffix.lower()
+        head = src.open("rb").read(8)
+        if ext in MAGIC and not head.startswith(MAGIC[ext]):
+            print(f"SKIP {f.name}: {src.name} is not a {ext} file (starts {head!r})")
+            missing.append(f.name)
+            continue
+        d = OUT_DIR / f.source / run_date
+        d.mkdir(parents=True, exist_ok=True)
+        dest = d / filename(f.url)
+        if dest.exists() and not force:
+            print(f"skip (exists): {rel(dest)}")
+            continue
+        shutil.copy2(src, dest)
+        digest = sha256(dest)
+        retrieved = dt.datetime.fromtimestamp(src.stat().st_mtime, dt.UTC).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
+        notes = {
+            "task": TASK,
+            "source": f.source,
+            "name": f.name,
+            "rounds": f.rounds,
+            "file": rel(dest),
+            "bytes": dest.stat().st_size,
+            "page": f.page,
+            "method": "browser",
+            "method_note": "saved by hand in a browser; the site returns HTTP 403 to scripts",
+            "browser_file_name": src.name,
+        }
+        if ext == ".xlsx":
+            rows = xlsx_rows(dest)
+            notes["rows_by_sheet"] = rows
+            notes["rows"] = sum(rows.values())
+        elif ext == ".pdf":
+            notes["pages"] = pdf_pages(dest)
+        if f.t04_sha256:
+            notes["t04_sha256"] = f.t04_sha256
+            notes["changed_since_t04"] = digest != f.t04_sha256
+        append_manifest(
+            [
+                {
+                    "source_id": f"applicants_{f.source}",
+                    "url": f.url,
+                    "retrieved_utc": retrieved,
+                    "sha256": digest,
+                    "license": LICENSE_NOTE,
+                    "notes": json.dumps(notes, separators=(",", ":"), sort_keys=True),
+                }
+            ]
+        )
+        flag = ""
+        if f.t04_sha256:
+            flag = "  CHANGED since T0.4" if notes["changed_since_t04"] else "  same as T0.4"
+        print(f"{f.name:28} {notes['bytes']:>10,} B  sha256 {digest[:12]}…{flag}")
+        report.append(notes | {"sha256": digest})
+    if missing:
+        print(f"\nnot found in {folder}: {', '.join(missing)}")
+    return report
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m harborfund.ingest.applicants")
     ap.add_argument("--date", default=None, help="Run folder date (default: today, UTC)")
     ap.add_argument("--only", nargs="*", default=None, help="File names or source folders")
     ap.add_argument("--force", action="store_true", help="Re-download files that exist")
     ap.add_argument("--dry-run", action="store_true", help="List files without downloading")
+    ap.add_argument(
+        "--import-dir",
+        type=Path,
+        default=None,
+        help="Register files already saved by hand in this folder (e.g. ~/Downloads) instead of downloading",
+    )
     a = ap.parse_args(argv)
     run_date = a.date or dt.datetime.now(dt.UTC).strftime("%Y-%m-%d")
-    download(run_date, a.only, a.force, a.dry_run)
+    if a.import_dir:
+        import_files(a.import_dir.expanduser(), run_date, a.only, a.force)
+    else:
+        download(run_date, a.only, a.force, a.dry_run)
     return 0
 
 
