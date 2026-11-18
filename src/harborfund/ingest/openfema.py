@@ -306,8 +306,16 @@ EXTRACT_COLS = [
 ]
 
 
+ID_COLS = ["id_prefix", "id_round_fy", "id_code", "id_award", "id_family"]
+
+
+def _fresh(df: pd.DataFrame) -> pd.DataFrame:
+    """Copy without derived columns, so helpers can take an already-annotated snapshot."""
+    return df.drop(columns=[c for c in [*ID_COLS, "program_id"] if c in df.columns])
+
+
 def pacific_extract(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.copy()
+    df = _fresh(df)
     df["program_id"] = hma_program_id(df)
     df = df[df["program"].isin(BRIC_PDM_PROGRAMS)]
     df = df[df["subapplicantStateAbbreviation"].isin(STATES)].copy()
@@ -317,9 +325,50 @@ def pacific_extract(df: pd.DataFrame) -> pd.DataFrame:
     z = zip_flags(df, coastal)
     if z is not None:
         out = out.join(z)
+    out["in_study_window"] = (out["fiscalYear"] >= config.STUDY_FY_START).fillna(False)
     out["has_uei"] = out["subapplicantUei"].notna()
     out["has_title"] = out["subapplicationTitle"].notna()
     return out.sort_values(["program_id", "fiscalYear", "subapplicationIdentifier"])
+
+
+def crosscheck_award_ids(prime: pd.DataFrame, snap: pd.DataFrame) -> pd.DataFrame:
+    """Test T1.1's 97.047 rule (FEMA award-ID code -> program) against OpenFEMA.
+
+    `prime` is a USAspending Assistance_PrimeAwardSummaries table (T1.1's national 97.047
+    pull). FEMA GO award IDs (EMx-YYYY-CC-...) can be joined to OpenFEMA subapplication IDs,
+    either exactly or on the first four parts. eGrants-era awards (most `PC` and pre-2020
+    `PD`) cannot be joined; they come back with `of_program_id` blank.
+    """
+    from harborfund.ingest.usaspending import fema_award_parts
+
+    p = prime.copy()
+    p = p.join(fema_award_parts(p["award_id_fain"].fillna("")))
+    s = _fresh(snap)
+    s["program_id"] = hma_program_id(s)
+    s = s.join(id_code(s["subapplicationIdentifier"]))
+    exact = s.assign(k=s["subapplicationIdentifier"].str.upper()).set_index("k")["program_id"]
+    exact = exact[~exact.index.duplicated()]
+    award = (
+        s[s["id_award"] != ""]
+        .groupby("id_award")["program_id"]
+        .agg(lambda v: "|".join(sorted(set(v))))
+    )
+    fain = p["award_id_fain"].fillna("").str.upper()
+    four = fain.str.extract(r"^(EM[A-Z]-\d{4}-[A-Z]{2}-\d+)")[0]
+    p["of_program_id"] = fain.map(exact).fillna(fain.map(award)).fillna(four.map(award))
+    p["of_join"] = "none"
+    p.loc[fain.isin(exact.index), "of_join"] = "exact"
+    p.loc[
+        (p["of_join"] == "none") & (fain.map(award).notna() | four.map(award).notna()), "of_join"
+    ] = "award_prefix"
+    t11 = {"BR": "bric", "PC": "pdm_competitive"}
+    rnd = p["fema_round_fy"]
+    p["t11_program_id"] = p["fema_program_code"].map(t11).fillna("other_97047")
+    is_pd = p["fema_program_code"] == "PD"
+    p.loc[is_pd & (rnd >= CPF_START).fillna(False), "t11_program_id"] = "pdm_cpf"
+    p.loc[is_pd & ~(rnd >= CPF_START).fillna(False), "t11_program_id"] = "pdm_other"
+    p["agrees"] = (p["of_program_id"] == p["t11_program_id"]).where(p["of_join"] != "none")
+    return p
 
 
 def process(run_date: str | None) -> pd.DataFrame:
