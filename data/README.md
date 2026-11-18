@@ -32,6 +32,7 @@ Current tables:
 | File | Owner task | Status |
 |---|---|---|
 | `program_inventory.csv` | T0.3 | 19 programs; columns and sources in `program_inventory_notes.md` |
+| `coastal_counties.csv` | T1.1 | 42 NOAA coastal shoreline counties in CA/OR/WA; sources in `coastal_counties_sources.md` |
 
 ## manifest.csv
 
