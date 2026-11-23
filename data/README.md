@@ -34,6 +34,9 @@ Current tables:
 | `program_inventory.csv` | T0.3 | 19 programs; columns and sources in `program_inventory_notes.md` |
 | `coastal_counties.csv` | T1.1 | 42 NOAA coastal shoreline counties in CA/OR/WA; sources in `coastal_counties_sources.md` (checked against the PDF by eye in T1.2) |
 | `harbor_entity_crosswalk.csv` | T1.2 | Pilot: 20 harbors, 29 harbor × entity rows with UEI/legacy DUNS; rules and sources in `harbor_entity_crosswalk_notes.md`. T2.1 extends it |
+| `award_harbor_truth_pilot.csv` | T1.3 | Hand-coded truth set for Gate 1: 241 awards in the 20 pilot harbors' counties labelled sample / other / not harbor-related; rules in `award_harbor_truth_pilot_notes.md` |
+| `award_harbor_overrides.csv` | T1.3 | Manual award → harbor corrections (assign / unassign), applied after auto-matching; rules in `award_harbor_overrides_notes.md` |
+| `subapplicant_harbor_review_pilot.csv` | T1.3 | Light review of BRIC/PDM subapplicants (matched or keyword hits only); rules in `award_harbor_truth_pilot_notes.md` |
 
 ## manifest.csv
 
