@@ -25,7 +25,7 @@ Three folders, three rules. Code reads paths from `harborfund.config`, never har
 
 - Each table has a `source` column or a companion note (`<table>_sources.md`) saying where every row came from.
 - Edited by hand or by a documented script. Record non-trivial edits in the commit message.
-- Harbor IDs come from the fishing-port access-gaps inventory. The harbor ↔ entity crosswalk is the only link between harbors and recipient entities.
+- Harbor IDs come from the fishing-port access-gaps inventory, plus T2.1 additions `<ST>-add-<slug>` (`harbor_additions.csv`). The harbor ↔ entity crosswalk is the only link between harbors and recipient entities.
 
 Current tables:
 
@@ -33,7 +33,9 @@ Current tables:
 |---|---|---|
 | `program_inventory.csv` | T0.3 | 19 programs; columns and sources in `program_inventory_notes.md` |
 | `coastal_counties.csv` | T1.1 | 42 NOAA coastal shoreline counties in CA/OR/WA; sources in `coastal_counties_sources.md` (checked against the PDF by eye in T1.2) |
-| `harbor_entity_crosswalk.csv` | T1.2 | Pilot: 20 harbors, 29 harbor × entity rows with UEI/legacy DUNS; rules and sources in `harbor_entity_crosswalk_notes.md`. T2.1 extends it |
+| `harbor_entity_crosswalk.csv` | T1.2, T2.1 | Full universe: 63 harbors (58 inventory + 5 added), 81 harbor × entity rows with UEI/legacy DUNS and SAM.gov status columns (filled by `harborfund.ingest.sam apply`); rules, sources and Corrections log in `harbor_entity_crosswalk_notes.md` |
+| `harbor_facilities.csv` | T2.1 | Owner → facility → harbor_id or `none` (site rule), 70 rows; how reviewers apply the rule in `harbor_facilities_notes.md` |
+| `harbor_additions.csv` | T2.1 | Every candidate harbor outside the inventory (added / rejected / deferred), with the approved addition rule in `harbor_additions_notes.md` |
 | `award_harbor_truth_pilot.csv` | T1.3 | Hand-coded truth set for Gate 1: 241 awards in the 20 pilot harbors' counties labelled sample / other / not harbor-related; rules in `award_harbor_truth_pilot_notes.md` |
 | `award_harbor_overrides.csv` | T1.3 | Manual award → harbor corrections (assign / unassign), applied after auto-matching; rules in `award_harbor_overrides_notes.md` |
 | `subapplicant_harbor_review_pilot.csv` | T1.3 | Light review of BRIC/PDM subapplicants (matched or keyword hits only); rules in `award_harbor_truth_pilot_notes.md` |

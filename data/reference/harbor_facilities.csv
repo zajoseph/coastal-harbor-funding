@@ -1,0 +1,71 @@
+owner_entity,owner_uei,facility_name,facility_type,harbor_id,source_urls,notes
+Port of Grays Harbor,KC4CLTVG4HR8,Westport Marina,marina,WA-westport,data/reference/award_harbor_truth_pilot.csv,Inventory harbor (marina named). T1.3: Westport Marina modernization award = sample harbor.
+Port of Grays Harbor,KC4CLTVG4HR8,Terminal 4 (Aberdeen),cargo_terminal,none,data/reference/award_harbor_truth_pilot.csv,T1.3: FY2024 PIDP Terminal 4 rail/laydown = other facility (site rule). Awards count in T2.7 past awards only.
+Port of Grays Harbor,KC4CLTVG4HR8,"Terminals 1, 2 and 3 (Aberdeen/Hoquiam)",cargo_terminal,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Grays Harbor,KC4CLTVG4HR8,Satsop Business Park,industrial_park,none,,Facility from general knowledge; not checked against an owner page this session.
+Oregon International Port of Coos Bay,N59EVE4Y1RR3,Charleston Marina,marina,OR-charleston,,Inventory harbor (marina named).
+Oregon International Port of Coos Bay,N59EVE4Y1RR3,Charleston Shipyard (Charleston Marina Complex),boatyard,OR-charleston,,Part of the Charleston Marina Complex (assumed; not checked). Reviewers: confirm the award is at Charleston before assigning.
+Oregon International Port of Coos Bay,N59EVE4Y1RR3,Coos Bay Rail Line,rail,none,data/reference/award_harbor_truth_pilot.csv,T1.3: FY2023 PIDP rail ties/surfacing = other facility.
+Oregon International Port of Coos Bay,N59EVE4Y1RR3,North Spit / Coos Bay marine terminals,cargo_terminal,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Newport,K5ZVUGL5VE53,"Commercial marina and fishing docks (Port Docks 3, 5, 7; Bay Blvd)",marina,OR-newport,data/reference/award_harbor_truth_pilot.csv,Inventory harbor. T1.3: EDA 2020 Port Dock 5 pier = sample harbor.
+Port of Newport,K5ZVUGL5VE53,Newport International Terminal,cargo_terminal,none,data/reference/award_harbor_truth_pilot.csv,T1.3: FY2024 PIDP laydown next to the terminal = other facility.
+Port of Newport,K5ZVUGL5VE53,South Beach Marina and RV park,marina,none,,Recreational marina across Yaquina Bay; the inventory names only the commercial marina. Facility from general knowledge; not checked against an owner page this session.
+"Humboldt Bay Harbor, Recreation and Conservation District",KC13AZ47BGR3,Woodley Island Marina,marina,CA-humboldt-bay,https://www.humboldtbay.org/node/60,Inventory names a bay complex: every facility on Humboldt Bay counts.
+"Humboldt Bay Harbor, Recreation and Conservation District",KC13AZ47BGR3,Fields Landing boat yard,boatyard,CA-humboldt-bay,https://www.humboldtbay.org/node/60,
+"Humboldt Bay Harbor, Recreation and Conservation District",KC13AZ47BGR3,Redwood Marine Terminal (Samoa),cargo_terminal,CA-humboldt-bay,data/reference/award_harbor_truth_pilot.csv,"On Humboldt Bay, so it counts. FY2024 PIDP 693JF72444090 recorded under Port of Grays Harbor's UEI."
+"Humboldt Bay Harbor, Recreation and Conservation District",KC13AZ47BGR3,King Salmon beach / launch,launch,CA-humboldt-bay,https://www.humboldtbay.org/about,
+"Humboldt Bay Harbor, Recreation and Conservation District",KC13AZ47BGR3,Shelter Cove boat launch,launch,CA-shelter-cove,https://humboldtbay.org/node/153,Same owner UEI as Humboldt Bay: assign by place of performance (Shelter Cove/Whitethorn).
+City of Eureka,RLLXTF29T163;ZS1BC331CDE5,Eureka Public Marina and Commercial Fishing Quay,marina,CA-humboldt-bay,data/reference/award_harbor_truth_pilot.csv,T1.3: fender-pile award = sample harbor.
+City of Eureka,RLLXTF29T163;ZS1BC331CDE5,City ice plant and Marine Fueling Facility,processing_service,CA-humboldt-bay,,"From the port inventory facilities.csv (City-owned, leased)."
+Port of Willapa Harbor,SZC5FMBF2XE9,Bay Center Marina,marina,WA-bay-center,https://www.portofwillapaharbor.com/index.php/individual-facilities/bay-center-marina,
+Port of Willapa Harbor,SZC5FMBF2XE9,Tokeland Marina,marina,WA-tokeland,,Same owner UEI as Bay Center: assign by place of performance (Tokeland vs Bay Center).
+Port of Willapa Harbor,SZC5FMBF2XE9,Raymond and South Bend docks; Port industrial sites,dock,none,,Inventory names the two marinas only. Facility from general knowledge; not checked against an owner page this session.
+Port of Bellingham,NRYGMRVUBJA6,Squalicum Harbor,marina,WA-bellingham,,
+Port of Bellingham,NRYGMRVUBJA6,Blaine Harbor,marina,WA-blaine,,Same owner UEI as Squalicum: assign by place of performance (Blaine vs Bellingham).
+Port of Bellingham,NRYGMRVUBJA6,Bellingham Shipping Terminal,cargo_terminal,none,,T1.1: FY2023 PIDP BST pier repairs = outside the harbor under the site rule (not in the T1.3 truth set; Bellingham was not a pilot harbor).
+Port of Bellingham,NRYGMRVUBJA6,Fairhaven / Bellingham Cruise Terminal,ferry_terminal,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Bellingham,NRYGMRVUBJA6,Bellingham International Airport,airport,none,,
+Port of Port Angeles,U4C1BC6BD414;GF62KEMC76M3,Port Angeles Boat Haven,marina,WA-port-angeles,,Inventory harbor (marina named).
+Port of Port Angeles,U4C1BC6BD414;GF62KEMC76M3,Marine terminals and log yard (Terminals 1–7),cargo_terminal,none,data/reference/award_harbor_truth_pilot.csv,"T1.3: terminal rehab, 112-year-old dock, log stackers = other harbor-related facility."
+Port of Port Angeles,U4C1BC6BD414;GF62KEMC76M3,Marine Trades Industrial Park,industrial_park,none,data/reference/award_harbor_truth_pilot.csv,T1.3 labelled the EDA 2022 MTIP award other_harbor.
+Port of Port Angeles,U4C1BC6BD414;GF62KEMC76M3,John Wayne Marina (Sequim Bay),marina,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Port Angeles,U4C1BC6BD414;GF62KEMC76M3,William R. Fairchild International Airport,airport,none,,
+Port of Everett,HBLLB16JMNL3,Port of Everett Marina,marina,WA-everett,,
+Port of Everett,HBLLB16JMNL3,"Seaport (South Terminal, Pacific Terminal, Mount Baker Terminal)",cargo_terminal,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Anacortes,ZA7GBCL4NS51,Cap Sante Marina,marina,WA-anacortes,,
+Port of Anacortes,ZA7GBCL4NS51,Pier 1 / Pier 2 marine terminal and Curtis Wharf,cargo_terminal,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Anacortes,ZA7GBCL4NS51,Anacortes Airport,airport,none,,
+Port of Astoria,PPHFH1VY72F9,West Basin and East Basin marinas,marina,OR-astoria,,Inventory harbor (basins named).
+Port of Astoria,PPHFH1VY72F9,"Piers 1, 2 and 3",cargo_terminal,none,,Inventory names the basins only; seafood processors on Pier 2 are context (inventory note). Reviewers may want a decision on Pier 2 processing awards. Facility from general knowledge; not checked against an owner page this session.
+Port of Astoria,PPHFH1VY72F9,Astoria Regional Airport,airport,none,,
+Port of Port Townsend,DW38JANABVN7,Boat Haven (marina and boatyard),marina,WA-port-townsend,,"T1.1: FY2026 PIDP breakwater, EDA 2024 travelift."
+Port of Port Townsend,DW38JANABVN7,Point Hudson Marina,marina,none,,Inventory names Boat Haven only. Facility from general knowledge; not checked against an owner page this session.
+Port of Port Townsend,DW38JANABVN7,Port Hadlock and Quilcene marinas,marina,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Port Townsend,DW38JANABVN7,Jefferson County International Airport,airport,none,,
+Port of Seattle,VFD9N7EQDCN3,Fishermen's Terminal,marina,WA-seattle,https://www.portseattle.org/node/8294,
+Port of Seattle,VFD9N7EQDCN3,Terminal 5 and other Elliott Bay container terminals (managed by NWSA),cargo_terminal,none,data/reference/award_harbor_truth_pilot.csv,"NWSA and SSA Terminals T1.1 awards for T5 = other facility (T1.3). Port of Seattle owns an inventory harbor, so T5 is not an added harbor (user decision 2026-11-23)."
+Port of Seattle,VFD9N7EQDCN3,"Terminal 91, Shilshole Bay Marina, Salmon Bay Marina",marina,none,,Facility from general knowledge; not checked against an owner page this session.
+Port of Seattle,VFD9N7EQDCN3,Seattle-Tacoma International Airport,airport,none,,
+Port of Skagit,QSANH2LEHDU5,La Conner Marina,marina,WA-la-conner,,
+Port of Skagit,QSANH2LEHDU5,Skagit Regional Airport and Bayview business park,airport,none,,
+Port of Skagit,QSANH2LEHDU5,SWIFT Center business park (Sedro-Woolley),industrial_park,none,data/reference/award_harbor_truth_pilot.csv,T1.3: EDA EAA award = not harbor.
+Port of San Francisco (City and County of San Francisco),G2ACFK8T2MJ6,Fisherman's Wharf and Pier 45,wharf,CA-san-francisco,,"Inventory names Fisherman's Wharf / Pier 45, so only these count."
+Port of San Francisco (City and County of San Francisco),G2ACFK8T2MJ6,Piers 80 and 94–96 cargo terminals; Pier 70; Ferry Building; cruise terminal,cargo_terminal,none,,Facility from general knowledge; not checked against an owner page this session.
+San Diego Unified Port District,MN5GADR8B2D5;HKTTLK7MGCN9,"All San Diego Bay facilities (Tuna Harbor, Driscoll's Wharf area, Tenth Avenue and National City marine terminals)",harbor_complex,CA-san-diego-bay,data/reference/award_harbor_truth_pilot.csv,Inventory names a bay complex: every Port facility on San Diego Bay counts (T1.3: National City terminal berths = sample harbor).
+City of Los Angeles Harbor Department (Port of Los Angeles),TYUJZWJ8N568,"All Port of LA facilities (Fish Harbor, terminals, City Dock No. 1)",harbor_complex,CA-los-angeles-long-beach,data/reference/award_harbor_truth_pilot.csv,Inventory names a harbor complex: every facility in the LA/LB harbor counts.
+City of Long Beach Harbor Department (Port of Long Beach),DBSHZ2LVFAE6,"All Port of Long Beach facilities (Middle Harbor, Pier B, Terminal Island)",harbor_complex,CA-los-angeles-long-beach,data/reference/award_harbor_truth_pilot.csv,"Harbor complex. The same UEI carries City non-port awards (flood control, CARES RLF): those are not facilities of the port and get no harbor (T1.3)."
+Oxnard Harbor District (Port of Hueneme),VG2WCYRAHTW5,"Port of Hueneme (terminals, squid offloading, parking structure)",harbor_complex,CA-port-hueneme,data/reference/award_harbor_truth_pilot.csv,Single-site port; all awards at Port Hueneme count.
+County of Ventura (Harbor Department),HG2JKZYYTUT3,Channel Islands Harbor,harbor_complex,CA-channel-islands,,
+"City of Warrenton, Oregon",MXASVPL41FV3,Warrenton Mooring Basin,marina,OR-warrenton,,
+"City of Warrenton, Oregon",MXASVPL41FV3,Hammond Marina,marina,OR-warrenton,https://clatsopnews.com/2019/09/25/hammond-marina-now-officially-belongs-to-the-city-of-warrenton,Inventory names both basins.
+"County of Douglas, Oregon",CK8SAVBM4CM7,Salmon Harbor Marina,marina,OR-winchester-bay,,
+County of Sonoma (Regional Parks),EB6LZJPCWEU3;LXKMK5ZYAYY7,"Spud Point Marina (fuel dock, icehouse, hoist)",marina,CA-bodega-bay,,
+County of Sonoma (Regional Parks),EB6LZJPCWEU3;LXKMK5ZYAYY7,Mason's Marina / Westside Park launch (Bodega Bay),marina,CA-bodega-bay,,"Inventory names Bodega Bay (bay), so county facilities on the bay count. Facility from general knowledge; not checked against an owner page this session."
+City of Oakland Port Department (Port of Oakland),LWYHDXYRZCU8,Oakland seaport terminals and Jack London Square marinas,harbor_complex,CA-add-oakland,https://dbw.parks.ca.gov/boatingfacilities/f/440,
+City of Oakland Port Department (Port of Oakland),LWYHDXYRZCU8,Oakland International Airport,airport,none,,Same UEI as the seaport: airport awards stay out of harbor dollars.
+Port of Tacoma,QP8EKP37RKN1,"Commencement Bay terminals (incl. Husky Terminal, off-dock container support facility)",harbor_complex,WA-add-tacoma,data/reference/award_harbor_truth_pilot.csv,
+Port of Olympia,FNSGJ46UJ4P3,Budd Inlet marine terminal,cargo_terminal,WA-add-olympia,,
+Port of Olympia,FNSGJ46UJ4P3,Swantown Marina and Boatworks,marina,WA-add-olympia,,"Added harbor named as Budd Inlet (bay), so both count. Facility from general knowledge; not checked against an owner page this session."
+Port of Olympia,FNSGJ46UJ4P3,Olympia Regional Airport,airport,none,,
+Swinomish Indian Tribal Community (Swinomish Port Authority),M4EWJ7AWAD17,Commercial Float Dock (Moorage Way) and PIDP boat ramp / commercial pier / mooring float,dock,WA-add-swinomish,https://nill.narf.org/codes/swinomishcode/18_9.pdf,
+Coquille Indian Tribe,QHFSNL1N8NM5,Ko'Kwel Wharf (North Bend),wharf,OR-add-kokwel-wharf,https://repository.library.noaa.gov/view/noaa/66670/noaa_66670_DS1.pdf,
